@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AI Provider Factory
  *
@@ -147,7 +148,6 @@ class Provider_Factory
       $this->instances[$name] = $instance;
 
       return $instance;
-
     } catch (Exception $e) {
       error_log("WP AI Chat: Error creating provider '{$name}': " . $e->getMessage());
       return false;

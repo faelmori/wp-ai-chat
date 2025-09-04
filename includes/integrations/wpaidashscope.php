@@ -431,7 +431,7 @@ function submit_tool_output($bot_id, $user_id, $access_token, $tool_call_id, $ou
 function deepseek_render_agents_page()
 {
   $saved = isset($_GET['settings-updated']) && $_GET['settings-updated'] === 'true';
-  ?>
+?>
   <style>
     .dashscope-wrap {
       background: #fff;
@@ -552,7 +552,7 @@ function deepseek_render_agents_page()
 
   <?php if ($saved): ?>
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
+      document.addEventListener('DOMContentLoaded', function() {
         const successMessage = document.querySelector('.dashscope-wrap .success-message');
         setTimeout(() => {
           successMessage.style.display = 'none';
@@ -601,7 +601,7 @@ function deepseek_render_agent_logs_page()
     $agent_map[$agent['app_id']] = $agent['name'];
   }
 
-  ?>
+?>
   <div class="wrap">
     <h1>智能体应用对话记录</h1>
 
@@ -676,9 +676,9 @@ function deepseek_render_agent_logs_page()
     <?php endif; ?>
   </div>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
       document.querySelectorAll('.delete-agent-log').forEach(button => {
-        button.addEventListener('click', function (e) {
+        button.addEventListener('click', function(e) {
           e.preventDefault();
           if (!confirm('确定要删除此对话记录吗？')) return;
 
@@ -694,10 +694,12 @@ function deepseek_render_agent_logs_page()
           });
 
           fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: data
-          })
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: data
+            })
             .then(response => response.json())
             .then(data => {
               if (data.success) {
@@ -715,7 +717,7 @@ function deepseek_render_agent_logs_page()
       });
     });
   </script>
-  <?php
+<?php
 }
 
 // 注册设置
@@ -757,7 +759,7 @@ function coze_access_token_callback()
 {
   $token = get_option('coze_access_token');
   $expiry = get_option('coze_access_token_expiry');
-  ?>
+?>
   <input type="text" name="coze_access_token" value="<?php echo esc_attr($token); ?>" style="width: 500px;" />
   <p class="description">输入扣子平台的个人访问令牌。</p>
   <p>
@@ -776,7 +778,7 @@ function coze_access_token_callback()
 function deepseek_agents_list_callback()
 {
   $agents = get_option('deepseek_agents', []);
-  ?>
+?>
   <table class="widefat" id="deepseek-agents-table">
     <thead>
       <tr>
@@ -820,8 +822,8 @@ function deepseek_agents_list_callback()
           </td>
           <td>
             <textarea name="deepseek_agents[<?php echo $index; ?>][opening_questions]" rows="3" cols="30"><?php
-               echo esc_textarea(implode("\n", $agent['opening_questions'] ?? []));
-               ?></textarea>
+                                                                                                          echo esc_textarea(implode("\n", $agent['opening_questions'] ?? []));
+                                                                                                          ?></textarea>
           </td>
           <td>
             <input type="checkbox" name="deepseek_agents[<?php echo $index; ?>][enable_file_upload]" value="1" <?php checked($agent['enable_file_upload'] ?? 0, 1); ?> />
@@ -833,7 +835,7 @@ function deepseek_agents_list_callback()
   </table>
   <button type="button" class="button" id="add-agent">添加新智能体</button>
   <script>
-    document.getElementById('add-agent').addEventListener('click', function () {
+    document.getElementById('add-agent').addEventListener('click', function() {
       var table = document.getElementById('deepseek-agents-table').getElementsByTagName('tbody')[0];
       var rowCount = table.rows.length;
       var row = table.insertRow();
@@ -859,7 +861,7 @@ function deepseek_agents_list_callback()
             `;
     });
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', function(e) {
       if (e.target.classList.contains('delete-agent')) {
         e.target.closest('tr').remove();
       }
@@ -875,7 +877,7 @@ function deepseek_agents_list_callback()
       }
     }
   </script>
-  <?php
+<?php
 }
 
 // 清理智能体数据
@@ -1071,4 +1073,3 @@ function deepseek_cleanup_options()
 register_uninstall_hook(__FILE__, 'deepseek_cleanup_options');
 
 ?>
-

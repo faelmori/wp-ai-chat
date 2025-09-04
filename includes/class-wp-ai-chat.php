@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Main Plugin Class
  *
@@ -118,16 +119,12 @@ final class WP_AI_Chat
   /**
    * Prevent cloning
    */
-  private function __clone()
-  {
-  }
+  private function __clone() {}
 
   /**
    * Prevent unserializing
    */
-  private function __wakeup()
-  {
-  }
+  private function __wakeup() {}
 
   /**
    * Setup plugin constants

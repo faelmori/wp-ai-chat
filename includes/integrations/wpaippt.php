@@ -49,7 +49,7 @@ function docmee_register_settings()
 // 设置页面
 function wpaippt_settings_page()
 {
-  ?>
+?>
   <style>
     .aippt_wrap {
       margin: 20px auto;
@@ -199,9 +199,9 @@ function wpaippt_settings_page()
   </div>
 
   <script type="text/javascript">
-    jQuery(document).ready(function ($) {
+    jQuery(document).ready(function($) {
       // 监听表单提交
-      $('.aippt_wrap form').on('submit', function (e) {
+      $('.aippt_wrap form').on('submit', function(e) {
         e.preventDefault();
 
         // 模拟表单提交
@@ -209,11 +209,11 @@ function wpaippt_settings_page()
           url: $(this).attr('action'),
           type: 'POST',
           data: $(this).serialize(),
-          success: function (response) {
+          success: function(response) {
             // 显示成功消息
             $('.aippt_wrap .success-message').text('保存成功').fadeIn();
             // 2秒后隐藏消息
-            setTimeout(function () {
+            setTimeout(function() {
               $('.aippt_wrap .success-message').fadeOut();
             }, 2000);
           }
@@ -301,7 +301,7 @@ function docmee_custom_login_message_styles()
   $post = get_post();
 
   if ($post && has_shortcode($post->post_content, 'docmee_ppt')) {
-    ?>
+  ?>
     <style>
       #vip-prompt-overlay {
         transition: opacity 0.3s ease;
@@ -323,7 +323,7 @@ function docmee_custom_login_message_styles()
         }
       }
     </style>
-    <?php
+  <?php
   }
 }
 add_action('wp_head', 'docmee_custom_login_message_styles');
@@ -346,7 +346,8 @@ function docmee_ppt_shortcode()
 
   // 完整样式输出
   ob_start(); ?>
-  <?php if (!is_user_logged_in()): // 添加登录提示层 ?>
+  <?php if (!is_user_logged_in()): // 添加登录提示层 
+  ?>
     <div id="vip-prompt-overlay"
       style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:99998;backdrop-filter:blur(3px);">
       <div id="vip-prompt"
@@ -468,16 +469,18 @@ function docmee_ppt_shortcode()
   </style>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
       window.docmeeUIInstance = null;
       const currentUser = <?php echo get_current_user_id(); ?>;
       const isMobile = <?php echo json_encode($is_mobile); ?>; // 设备类型参数
-      const nonce = '<?php echo $nonce; ?>';  // 获取nonce
+      const nonce = '<?php echo $nonce; ?>'; // 获取nonce
 
       function refreshToken() {
         return fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
           body: `action=generate_docmee_token&uid=${currentUser}&nonce=${nonce}`
         }).then(r => r.json());
       }
@@ -554,7 +557,10 @@ function docmee_ppt_shortcode()
       }
 
       function handleBeforeGenerate(message) {
-        const { subtype, fields } = message.data;
+        const {
+          subtype,
+          fields
+        } = message.data;
         if (subtype === 'outline') {
           console.log('即将生成PPT大纲:', fields);
           return true;
@@ -566,7 +572,10 @@ function docmee_ppt_shortcode()
       }
 
       function handleCustomTemplate(message) {
-        const { file, totalPptCount } = message.data;
+        const {
+          file,
+          totalPptCount
+        } = message.data;
         if (totalPptCount < 2) {
           showMessage('您的生成次数不足，无法创建自定义模板');
           return false;
@@ -622,19 +631,25 @@ function docmee_ppt_shortcode()
       // 在监听器中处理
       document.querySelector('#page_creator').addEventListener('click', () => {
         if (window.docmeeUIInstance) {
-          window.docmeeUIInstance.navigate({ page: 'creator' });
+          window.docmeeUIInstance.navigate({
+            page: 'creator'
+          });
           updatePageState('creator');
         }
       });
       document.querySelector('#page_dashboard').addEventListener('click', () => {
         if (window.docmeeUIInstance) {
-          window.docmeeUIInstance.navigate({ page: 'dashboard' });
+          window.docmeeUIInstance.navigate({
+            page: 'dashboard'
+          });
           updatePageState('dashboard');
         }
       });
       document.querySelector('#page_customTemplate').addEventListener('click', () => {
         if (window.docmeeUIInstance) {
-          window.docmeeUIInstance.navigate({ page: 'customTemplate' });
+          window.docmeeUIInstance.navigate({
+            page: 'customTemplate'
+          });
           updatePageState('customTemplate');
         }
       });
@@ -642,7 +657,7 @@ function docmee_ppt_shortcode()
   </script>
 
 
-  <?php
+<?php
   return ob_get_clean();
 }
 
