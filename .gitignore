@@ -1,0 +1,117 @@
+# WordPress
+wp-config.php
+wp-content/uploads/
+wp-content/cache/
+wp-content/backup-db/
+wp-content/advanced-cache.php
+wp-content/wp-cache-config.php
+wp-content/blogs.dir/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/uploads/
+wp-content/blogs.dir/
+
+# WordPress multisite
+wp-content/blogs.dir/
+wp-content/blog-deleted/
+wp-content/blog-inactive/
+wp-content/blog-suspended/
+
+# WordPress themes and plugins (except this one)
+wp-content/themes/
+wp-content/plugins/
+!wp-content/plugins/wp-ai-chat/
+
+# WordPress core
+/wordpress/
+wp-admin/
+wp-includes/
+xmlrpc.php
+wp-*.php
+!wp-ai-chat.php
+
+# Logs
+*.log
+logs/
+error_log
+access_log
+
+# Runtime
+*.cache
+*.tmp
+*.temp
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+nbproject/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Dependencies
+vendor/
+node_modules/
+bower_components/
+
+# Package managers
+composer.lock
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+*.min.js
+*.min.css
+!assets/js/*.min.js
+!assets/css/*.min.css
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Database
+*.sql
+*.sqlite
+*.db
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Translation files (generated)
+*.mo
+*.pot
+
+# PHP
+composer.phar
+.phpunit.result.cache
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Security
+.htaccess
+.htpasswd
+
+# Temporary files
+tmp/
+temp/
+cache/
