@@ -1,6 +1,6 @@
 <img src="https://github.com/suqicloud/wp-ai-chat/blob/main/ic_logo.png" width="60">
 
-# 小半WordPress ai助手  
+# WordPress AI Chat Assistant
 
 [![License](https://img.shields.io/badge/license-GPL-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-4.0.5-green.svg)](https://github.com/suqicloud/wp-ai-chat/releases/tag/4.0.5)
@@ -8,117 +8,193 @@
 [![PHP](https://img.shields.io/badge/PHP-8.0-orange.svg)](https://www.php.net/)
 [![Nginx](https://img.shields.io/badge/Nginx-1.2-green.svg)](https://nginx.org/)
 
+> **📖 Language / 语言版本**
+> **English** (current) | [Português](docs/README.pt.md) | [Español](docs/README.es.md) | [中文](docs/README.zh.md)
 
+## 📌 Overview
 
-## 📌 项目简介
+A comprehensive, open-source WordPress AI assistant plugin that brings advanced AI capabilities directly to your WordPress site. Features include conversational AI chat, content generation, SEO analysis, translation services, PowerPoint creation, document analysis, and intelligent agent applications.
 
-全开源免费 - WordPress ai助手插件，可实现：ai对话聊天(文字、图片生成、视频生成)、ai对话语音播放、ai文章生成、ai文章SEO分析、ai文章总结、ai文章翻译、ai生成PPT、ai文档分析、ai智能体应用、文章内容语音播放。  
-不会用的先看文档，就一个基础配置和apikey对接的事，这种插件没有什么高难度要求。
+**Perfect for DeepSeek integrations** - includes native support for DeepSeek models with optimized configuration and streaming responses.
 
+> **🔗 Official DeepSeek Integration**: This plugin is optimized for [DeepSeek API](https://platform.deepseek.com/api-docs/) with specialized configuration options and streaming support.
 
-商业源码无忌AI工具相关的更新： https://www.wujiit.com
+If you're new to this plugin, please read the documentation first. It only requires basic configuration and API key integration - no advanced technical requirements needed.
 
+**Commercial updates and advanced features**: <https://www.wujiit.com>
 
-## 🚀 功能特性
+## 🚀 Getting Started with DeepSeek
 
-1. 内置deepseek文本接口  
-1. 内置阿里通义千问文本接口  
-1. 内置百度千帆(文心一言)文本接口  
-1. 内置豆包ai文本接口  
-1. 内置Kimi文本接口  
-1. 内置OpenAI文本接口  
-1. 内置腾讯混元文本接口  
-1. 内置Grok文本接口  
-1. 内置Gemini文本接口 
-1. 内置Claude文本接口 
-1. 内置讯飞星火文本接口  
-1. 内置自定义AI文本模型接口  
-1. 支持阿里智能体应用对接  
-1. 支持火山引擎智能体应用对接  
-1. 支持腾讯元器智能体应用对接  
-1. 支持字节扣子智能体应用对接  
-1. 支持文多多AIPPT接口生成PPT文件  
-1. 支持pollinations ai的文生图模型  
-1. 支持通义千问的图片生成模型  
-1. 支持通义千问的视频生成模型(文生视频、图生视频) 
-1. 支持通义千问和讯飞星火部分模型联网搜索
-1. 模型参数是自定义填写  
-1. 系统会用一个单独的数据表保存对话记录的第一句  
-1. 用户可以删掉自己的历史对话记录  
-1. 后台可以删掉用户的对话记录  
-1. 后台可以删掉用户的智能体应用对话  
-1. 可以通过关键词生成文章  
-1. 可以通过AI接口对文章进行总结  
-1. 前台显示AI助手入口  
-1. 只允许登录用户使用  
-1. 支持Markdown格式
-1. DeepSeek余额信息  
-1. 通过AI接口对文章进行翻译  
-1. 支持对接腾讯云、百度云 TTS服务实现语音播放文章内容  
-1. 可以实现语音播放AI回复的文字内容  
-1. 可以自定义提示词  
-1. 自定义提示词教程链接  
-1. Markdown内容板块自动加载复制按钮  
-1. 支持违规关键词检测  
-1. AI生成PPT可以验证会员权限(部分网站可能不行)  
-1. 智能体应用开场问题  
-1. 自定义前台ai助手名称等  
-1. 自定义未登录提示文字  
-1. 支持前台用户选择接口  
-1. 支持kimi和通义千问qwen-long上传文件分析文档内容  
-1. 支持前台用户选择模型参数  
-1. 支持对文章内容进行SEO分析，同时检测错别字  
+### Quick Setup
 
+1. **Install the Plugin**
+   - Upload to `/wp-content/plugins/` or install via WordPress admin
+   - Activate the plugin
 
-## 📥 安装
+2. **Configure DeepSeek API**
+   - Navigate to: Dashboard > AI Assistant > Settings
+   - Add your DeepSeek API key
+   - Select model: `deepseek-chat` (recommended)
 
-1. 下载最新版本文件。
-2. 进入WordPress插件后台
-3. 上传本地文件包安装
+3. **Start Chatting**
+   - Access the chat interface at `/ai-chat/`
+   - Or use shortcode: `[deepseek_chat]`
 
-或者直接上传到服务器的网站插件目录/wp-content/plugins也行，记得设置权限。  
+### API Integration Examples
 
-开发基础：WordPress 6.7.1  
-php版本：php 8.0  
+**PHP Server-side:**
 
-## 🛠️ 使用方法
+```php
+function call_deepseek_api($message) {
+    $api_key = get_option('deepseek_api_key');
 
-插件启用会自动创建一个前台对话页面。如果没有自动创建，就自己手动加短代码：  [deepseek_chat]  
+    $payload = [
+        'model' => 'deepseek-chat',
+        'messages' => [['role' => 'user', 'content' => $message]],
+        'stream' => false
+    ];
 
-1 - 文章翻译的接口要单独设置，因为这本来是我另外一个插件的，我合并过来了，不想折腾，就直接用了。   
-2 - ai生成PPT也是独立插件进行的合并，并且这个功能原本是根据我自己用的主题调整的，可能兼容性不好。    
+    $response = wp_remote_post('https://api.deepseek.com/chat/completions', [
+        'headers' => [
+            'Authorization' => 'Bearer ' . $api_key,
+            'Content-Type' => 'application/json'
+        ],
+        'body' => json_encode($payload),
+        'timeout' => 60
+    ]);
 
+    return json_decode(wp_remote_retrieve_body($response), true);
+}
+```
 
-如果插件彻底不用了，自己到数据库去删掉这个数据表：deepseek_chat_logs、deepseek_agent_chat_logs这2个数据表。
+**JavaScript Frontend:**
 
-教程：https://www.wujiit.com/wpaidocs
+```javascript
+async function streamDeepSeekResponse(message) {
+    const response = await fetch('/wp-admin/admin-ajax.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            action: 'deepseek_chat',
+            message: message,
+            stream: true
+        })
+    });
+    // Handle streaming response...
+}
+```
 
-主题页面需要支持全宽或者全屏模式，不然很狭窄。如果不支持就自己查看你主题的样式，通过代码实现deepseek助手页面全屏显示。  
+**cURL Direct API:**
 
-这款插件最早是为了测试deepseek自己写代码的能力，有一部分是deepseek自己写的代码(ai对话对接deepseek和最早版本的文章生成)，后面又合并了其他插件，所以代码里面的函数名称啥的看起来很乱，但是都写了注释。  
+```bash
+curl -X POST "https://api.deepseek.com/chat/completions" \
+  -H "Authorization: Bearer $DEEPSEEK_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "deepseek-chat", "messages": [{"role": "user", "content": "Hello!"}]}'
+```
 
+> **📚 DeepSeek Resources:**
+>
+> - [API Documentation](https://platform.deepseek.com/api-docs/) | [Platform](https://platform.deepseek.com/) | [Model Parameters Guide](https://platform.deepseek.com/api-docs/api/create-chat-completion)
 
-## 文件说明
+## 🚀 Key Features
 
-主文件： wp-ai-chat.php  
-翻译语音文件： wpaitranslate.php  
-ai生成ppt文件： wpaippt.php  
-智能体应用文件： wpaidashscope.php  
-主要js文件： wpai-chat.js  
-css文件：wpai-style.css  
-翻译语音js文件： wpai-script.js  
-ppt调用js文件： docmee-ui-sdk-iframe.min.js  
-Markdown解析文件： marked.min.js 
+### 🤖 AI Providers & Models
 
+- **DeepSeek** - Native integration with optimized streaming support
+- **Alibaba Qwen** - Tongyi Qianwen text interface with search capabilities
+- **Baidu Qianfan** - ERNIE (Wenxin Yiyan) text interface
+- **ByteDance Doubao** - AI text interface
+- **Moonshot Kimi** - Text interface with document analysis
+- **OpenAI** - GPT models integration
+- **Tencent Hunyuan** - Text interface
+- **xAI Grok** - Text interface
+- **Google Gemini** - Text interface
+- **Anthropic Claude** - Text interface
+- **iFLYTEK Spark** - Text interface with search capabilities
+- **Custom AI Models** - Flexible API integration
 
-## 赞助合作
-本项目 CDN 加速及安全防护由 Tencent EdgeOne 赞助：EdgeOne 提供长期有效的免费套餐，包含不限量的流量和请求，覆盖中国大陆节点，且无任何超额收费，感兴趣的朋友可以点击下面的链接领取. 
+### 🧠 Advanced AI Applications
 
-CDN acceleration and security protection for this project are sponsored by Tencent EdgeOne: EdgeOne offers a long-term free plan with unlimited traffic and requests, covering Mainland China nodes, with no overage charges. Interested friends can click the link below to claim it。
+- **Intelligent Agents** - Support for Alibaba, Volcano Engine, Tencent Yuanqi, ByteDance Coze
+- **PPT Generation** - AI-powered PowerPoint creation via Wenduo API
+- **Image Generation** - Pollinations AI and Qwen text-to-image models
+- **Video Generation** - Qwen text-to-video and image-to-video models
+- **Web Search** - Internet search capability for Qwen and Spark models
+- **Document Analysis** - File upload and analysis (Kimi, OpenAI, Qwen-long)
 
-[亚洲最佳CDN、边缘和安全解决方案 - Tencent EdgeOne](https://edgeone.ai/zh?from=github) 
+### 📝 Content Management
 
-[Best Asian CDN, Edge, and Secure Solutions - Tencent EdgeOne](https://edgeone.ai/zh?from=github) 
+- **Smart Chat Interface** - Interactive AI conversations with markdown support
+- **Article Generation** - Keyword-based content creation
+- **SEO Analysis** - Content optimization and spell checking
+- **Article Summarization** - AI-powered content summaries
+- **Translation Services** - Multi-language article translation
+- **Voice Synthesis** - Text-to-speech for articles and AI responses (Tencent Cloud, Baidu Cloud TTS)
 
+### ⚙️ WordPress Integration
+
+- **User Management** - Login-restricted access with user-specific chat history
+- **Admin Dashboard** - Complete conversation logs and user management
+- **Customizable Interface** - Personalized assistant names and prompts
+- **Content Controls** - Custom prompt tutorials and violation keyword detection
+- **Data Security** - Conversation logging with privacy controls
+- **Flexible Deployment** - Shortcode support and automatic page creation
+
+## � Installation
+
+1. **Download** the latest release from this repository
+2. **Upload** to your WordPress admin panel (Plugins > Add New > Upload Plugin)
+3. **Activate** the plugin
+4. **Configure** your AI API keys in the dashboard
+
+**Alternative:** Upload directly to `/wp-content/plugins/` on your server and set proper permissions.
+
+**Requirements:**
+
+- WordPress 6.7+
+- PHP 8.0+
+- Active internet connection for AI APIs
+
+## 🛠️ Usage
+
+The plugin automatically creates a front-end chat page when activated. If the page doesn't appear, manually add the shortcode: `[deepseek_chat]`
+
+**Important Notes:**
+
+1. **Translation interface** requires separate configuration (merged from standalone plugin)
+2. **AI PPT generation** may have theme compatibility issues (originally designed for specific theme)
+3. **Theme compatibility**: Your theme should support full-width or full-screen mode for optimal display
+
+**Need help?** Check the tutorial: <https://www.wujiit.com/wpaidocs>
+
+## 📁 File Structure
+
+| File | Purpose |
+|------|---------|
+| `wp-ai-chat.php` | Main plugin file |
+| `wpaitranslate.php` | Translation and voice features |
+| `wpaippt.php` | AI PowerPoint generation |
+| `wpaidashscope.php` | Intelligent agent applications |
+| `wpai-chat.js` | Main JavaScript functionality |
+| `wpai-style.css` | Plugin styles |
+| `wpai-script.js` | Translation/voice JavaScript |
+| `docmee-ui-sdk-iframe.min.js` | PPT generation SDK |
+| `marked.min.js` | Markdown parser |
+
+## �️ Database
+
+The plugin creates two tables:
+
+- `deepseek_chat_logs` - General chat conversations
+- `deepseek_agent_chat_logs` - Agent application conversations
+
+**Uninstall:** Manually delete these tables if completely removing the plugin.
+
+## 🤝 Sponsorship
+
+CDN acceleration and security protection for this project are sponsored by **Tencent EdgeOne**. EdgeOne offers a long-term free plan with unlimited traffic and requests, covering Mainland China nodes, with no overage charges.
+
+[🔗 Best Asian CDN, Edge, and Security Solutions - Tencent EdgeOne](https://edgeone.ai/?from=github)
 
 [![EdgeOne](https://edgeone.ai/media/34fe3a45-492d-4ea4-ae5d-ea1087ca7b4b.png)](https://edgeone.ai/?from=github)

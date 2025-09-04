@@ -1,0 +1,213 @@
+name: Code Quality & Security Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  php-lint:
+    name: PHP Syntax Check
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ['8.0', '8.1', '8.2']
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+
+    - name: PHP Syntax Check
+      run: find . -name "*.php" -exec php -l {} \;
+
+  phpcs:
+    name: WordPress Coding Standards
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        tools: composer
+
+    - name: Install PHPCS and WordPress Standards
+      run: |
+        composer global require "squizlabs/php_codesniffer=*"
+        composer global require "wp-coding-standards/wpcs"
+        composer global require "phpcompatibility/phpcompatibility-wp"
+        phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs,$HOME/.composer/vendor/phpcompatibility/phpcompatibility-wp
+
+    - name: Run PHPCS
+      run: |
+        phpcs --standard=WordPress --extensions=php --ignore=*/vendor/*,*/node_modules/* .
+      continue-on-error: true
+
+  security-check:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Security Check - Hardcoded Secrets
+      run: |
+        echo "Checking for potential security issues..."
+        # Check for hardcoded API keys or passwords
+        if grep -r -i "api[_-]key\s*=\s*['\"][^'\"]\{10,\}" --exclude-dir=.git --exclude-dir=node_modules .; then
+          echo "⚠️  Potential hardcoded API keys found"
+          exit 1
+        fi
+
+        # Check for SQL injection patterns
+        if grep -r "query.*\$_" --include="*.php" --exclude-dir=.git --exclude-dir=vendor .; then
+          echo "⚠️  Potential SQL injection vulnerabilities found"
+          exit 1
+        fi
+
+        # Check for XSS vulnerabilities (direct echo of user input)
+        if grep -r "echo\s\+\$_\(GET\|POST\|REQUEST\)" --include="*.php" --exclude-dir=.git --exclude-dir=vendor .; then
+          echo "⚠️  Potential XSS vulnerabilities found"
+          exit 1
+        fi
+
+        echo "✅ Basic security checks passed"
+
+  js-lint:
+    name: JavaScript Lint
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install ESLint
+      run: |
+        npm install -g eslint
+        npm install -g eslint-config-standard
+
+    - name: Create ESLint Config
+      run: |
+        cat > .eslintrc.js << EOF
+        module.exports = {
+          extends: ['standard'],
+          env: {
+            browser: true,
+            jquery: true
+          },
+          globals: {
+            wp: 'readonly',
+            ajaxurl: 'readonly',
+            DEEPSEEK_VARS: 'readonly'
+          },
+          rules: {
+            'no-unused-vars': 'warn',
+            'no-console': 'warn'
+          }
+        };
+        EOF
+
+    - name: Run ESLint
+      run: |
+        eslint *.js || echo "JavaScript linting completed with warnings"
+
+  wordpress-compatibility:
+    name: WordPress Compatibility
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Check WordPress Compatibility
+      run: |
+        echo "Checking WordPress compatibility..."
+
+        # Check for deprecated functions
+        if grep -r "mysql_" --include="*.php" --exclude-dir=.git .; then
+          echo "⚠️  Deprecated MySQL functions found"
+        fi
+
+        # Check for proper nonce usage
+        if ! grep -r "wp_nonce_field\|check_ajax_referer" --include="*.php" --exclude-dir=.git . > /dev/null; then
+          echo "⚠️  No nonce functions found - ensure CSRF protection is implemented"
+        fi
+
+        # Check for proper sanitization
+        if ! grep -r "sanitize_text_field\|esc_html\|esc_attr" --include="*.php" --exclude-dir=.git . > /dev/null; then
+          echo "⚠️  Limited sanitization functions found - ensure proper input/output sanitization"
+        fi
+
+        echo "✅ WordPress compatibility checks completed"
+
+  plugin-structure:
+    name: Plugin Structure Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Validate Plugin Structure
+      run: |
+        echo "Validating plugin structure..."
+
+        # Check for required files
+        required_files=("README.md" "wp-ai-chat.php")
+        for file in "${required_files[@]}"; do
+          if [ ! -f "$file" ]; then
+            echo "❌ Required file missing: $file"
+            exit 1
+          fi
+        done
+
+        # Check main plugin file header
+        if ! grep -q "Plugin Name:" wp-ai-chat.php; then
+          echo "❌ Plugin header missing in main file"
+          exit 1
+        fi
+
+        # Check for text domain
+        if ! grep -q "Text Domain:" wp-ai-chat.php; then
+          echo "⚠️  Text Domain not specified in plugin header"
+        fi
+
+        echo "✅ Plugin structure validation completed"
+
+  documentation:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Check Documentation
+      run: |
+        echo "Checking documentation..."
+
+        # Check if README exists and has content
+        if [ ! -s "README.md" ]; then
+          echo "❌ README.md is empty or missing"
+          exit 1
+        fi
+
+        # Check for basic README sections
+        required_sections=("Installation" "Features" "Usage")
+        for section in "${required_sections[@]}"; do
+          if ! grep -i "$section" README.md > /dev/null; then
+            echo "⚠️  README missing section: $section"
+          fi
+        done
+
+        echo "✅ Documentation checks completed"
